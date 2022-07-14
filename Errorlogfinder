@@ -1,0 +1,41 @@
+$filepath = "D:\Logfile\*.txt" #this is the file to be searched for matches
+$countfile = "D:\Logfile\countfile.txt" #this is the temp file that will store your count so you can compare the new count to it
+$regex = "ERROR" #this is the string you're looking for
+
+# Pull in the old count number from $countfile
+$old_count = Get-Content $countfile
+
+# Search the flipped file for the string listed in the $regex variable
+$find_matches = Get-ChildItem -Path $filepath -Recurse | Select-String -pattern $regex
+
+# Search & get modified file list
+Foreach ($rg in $regex)
+{ 
+    Get-ChildItem -Path $filepath -Recurse |
+    Select-String -pattern $regex | 
+    Select path,LineNumber,@{n='regex';e={$rg}}
+}
+
+# Count matches and write the count number to a file so it can be used to compare on next check
+$new_count = $find_matches.count
+
+# Compare the time from the timestamp to the modified current time and return DOWN if
+# the timestamp is newer than the modified date
+if ($new_count -gt $old_count)
+{
+ echo "Message.0: A new error has been found! (oldcount:$old_count , newcount:$new_count)"
+ echo "Statistic.0: 1"
+ $new_count > $countfile
+ exit 1
+}
+else
+{
+ echo "Message.0: No new log entry found!"
+ echo "Statistic.0: 0"
+ exit 0
+}
+
+#SAMPLE
+
+#Aug 11, 2016 12:01:00 AM <abc>.<abc>Scheduler jobToBeExecuted
+#INFO: Job started: <abc> - test
