@@ -34,8 +34,3 @@ else
  echo "Statistic.0: 0"
  exit 0
 }
-
-#SAMPLE
-
-#Aug 11, 2016 12:01:00 AM <abc>.<abc>Scheduler jobToBeExecuted
-#INFO: Job started: <abc> - test
