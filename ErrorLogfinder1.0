@@ -9,8 +9,8 @@ $old_count = Get-Content $countfile
 $find_matches = Get-ChildItem -Path $filepath -Recurse | Select-String -pattern $regex
 
 #Credentials to 
-$mypasswd = ConvertTo-SecureString "MonitorPresto" -AsPlainText -Force
-$mycreds = New-Object System.Management.Automation.PSCredential ("prestosupport@pristineinfotech.com", $mypasswd)
+$mypasswd = ConvertTo-SecureString "Password" -AsPlainText -Force
+$mycreds = New-Object System.Management.Automation.PSCredential ("Your email", $mypasswd)
 
 Foreach ($rg in $regex)
 { 
@@ -30,7 +30,7 @@ $new_count = $find_matches.count
 # the timestamp is newer than the modified date
 if ($new_count -gt $old_count)
 {
-send-mailmessage -ErrorAction SilentlyContinue -from "Server prestosupport@pristineinfotech.com" -to "IT Dept. jagan.selvamani@pristineinfotech.com" -subject "ERROR FOUND" -body " Message.0: A new error has been found! (oldcount:$old_count , newcount:$new_count) " -priority High -dno onSuccess, onFailure      -smtpServer smtp.office365.com -Credential $mycreds -usessl
+send-mailmessage -ErrorAction SilentlyContinue -from "Server SMTP Server" -to "IT Dept. Your email" -subject "ERROR FOUND" -body " Message.0: A new error has been found! (oldcount:$old_count , newcount:$new_count) " -priority High -dno onSuccess, onFailure      -smtpServer smtp.office365.com -Credential $mycreds -usessl
  #echo "Message.0: A new error has been found! ()"     #oldcount:$old_count , newcount:$new_count
  #echo "Statistic.0: 1"
  $new_count > $countfile
