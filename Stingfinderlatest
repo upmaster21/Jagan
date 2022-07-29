@@ -1,0 +1,60 @@
+$filepath = "Path\*.txt" #this is the file to be searched for matches
+$countfile = "C:\countfile.txt" #this is the temp file that will store your count so you can compare the new count to it
+$regex = "ERROR" #this is the string you're looking for
+#Report txt file
+$ReportFileName = "D:\output.txt"
+
+# Pull in the old count number from $countfile
+$old_count = Get-Content $countfile
+
+# Search the flipped file for the string listed in the $regex variable
+$find_matches = Get-ChildItem -Path $filepath -Recurse | Select-String -pattern $regex
+
+#Credentials to 
+$mypasswd = ConvertTo-SecureString "P@ssword" -AsPlainText -Force
+$mycreds = New-Object System.Management.Automation.PSCredential ("Youremail", $mypasswd)
+
+# Get latest Sting file from the logfile path
+
+Get-ChildItem -Path $filepath -Filter *.txt -Recurse | sort lastwritetime -Descending|
+foreach {
+
+$finds = $null
+$finds = Select-String -Path $_.Fullname -Pattern $regex
+
+if ($finds){
+ 
+  $props = [ordered]@{
+    Filename  = $finds[0].Path
+    #FirstLine = $finds[0].LineNumber
+    #FirstData = $finds[0].Line
+    LastLine = $finds[-1].LineNumber
+    LastData = $finds[-1].Line
+    
+  }
+  New-Object -TypeName PSObject -Property $props 
+  
+}
+} | Out-File -width 500 $ReportFileName
+
+# Count matches and write the count number to a file so it can be used to compare on next check
+$new_count = $find_matches.count
+$value=4+($oldcount-$newcount)
+$latesterror = Get-Content $ReportFileName -TotalCount $value | Out-File "D:\Attachment.txt"
+
+# Compare the time from the timestamp to the modified current time and return DOWN if
+# the timestamp is newer than the modified date
+if ($new_count -gt $old_count)
+{
+
+$body = [System.IO.File]::ReadAllText("D:\Attachment.txt")
+send-mailmessage -ErrorAction SilentlyContinue -from "Server Email@.com" -to "IT Dept. To email" -subject "ERROR FOUND : Message.0: A new error has been found! (oldcount:$old_count , newcount:$new_count)" -body $body -priority High -dno onSuccess, onFailure      -smtpServer smtp.office365.com -Credential $mycreds -usessl
+ $new_count > $countfile
+ exit 1
+}
+else
+{
+ echo "Message.0: No Error Found!"
+ echo "Statistic.0: 0"
+ exit 0 
+} 
