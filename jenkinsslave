@@ -1,0 +1,2 @@
+#Jenkins agent installation script
+nssm install jenkinsslave "C:\Program Files\Java\jdk-11.0.16\bin\java.exe" "-jar C:\JenkinsAgent\agent.jar -jnlpUrl http://192.168.56.9:8080/computer/Windows10/jenkins-agent.jnlp -secret 6fcb64d995792612356cfc8feab0424a7de28986d9b52247b4f82d0dde565ac5 -workDir "C:\Scripts""
