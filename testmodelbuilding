@@ -1,0 +1,20 @@
+#!/bin/bash
+
+root_path='/home/jobserver/Rdocker/RCode/00_v5.12/'
+model_path='/home/jobserver/Rdocker/RCode/00_v5.12/output/model/'
+model_end_date='2022-02-05'
+
+
+
+# Change dir to src/api
+new_dir=$root_path/src/api
+cd $new_dir
+
+echo $pwd
+echo 'Pointing to '$root_path'/src/api/'
+echo 'Model Building Started'
+
+# Execute model building
+Rscript buildModel_batch.R $root_path $model_path $model_end_date 8 87460 6 150
+
+echo 'Model Building Ended'
