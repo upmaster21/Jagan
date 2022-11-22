@@ -1,0 +1,15 @@
+This document will teach you that how to create a jason file and run multiple tasks using that json file.
+
+I will create json file with only three parameters that are id(Taskid),commandLine, and useridentity
+
+First open a excel sheet and create three column that id	commandLine	userIdentity.
+
+Fill your task id in ID and put your commands in commandline and useridentity(Admin or non admin) in three columns and save your excel sheet in csv format. Attached sample excel here: https://we.tl/t-GAlQSbIELe
+
+Now got to https://csvjson.com/csv2json to convert your csv file to json.
+
+after converted your json file is ready for run.
+
+you can use the below command to run your tasks using json script.
+
+Command: az batch task create --job-id "Yourjobid" --json-file "Json file location"
